@@ -269,7 +269,7 @@ MonoBehaviour:
   m_AdvancedMode: 0
   maxShadowDistance:
     m_OverrideState: 1
-    m_Value: 150
+    m_Value: 300
     min: 0
   cascadeShadowSplitCount:
     m_OverrideState: 1
