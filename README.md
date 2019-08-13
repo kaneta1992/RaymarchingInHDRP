@@ -30,4 +30,4 @@ The following passes are supported.
 
 - GBuffer Pass
 - ShadowCaster Pass
-- MotionVectors Pass
+- MotionVectors Pass(Affected by move camera and deformation by model matrix, but formula animation is not suported)
