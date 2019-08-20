@@ -31,13 +31,14 @@ float distanceFunction(float3 p) {
 
 DistanceFunctionSurfaceData getDistanceFunctionSurfaceData(float3 p) {
     DistanceFunctionSurfaceData surface = initDistanceFunctionSurfaceData();
+    
+    float3 positionWS = GetAbsolutePositionWS(p);
     surface.Position = p;
     surface.Normal   = normal(p, 0.00001);
-    surface.Occlusion = ao(p, surface.Normal, 1.0) * clamp(smoothstep(-40.0, -20.0, p.y + _WorldSpaceCameraPos.y), 0.3, 1.0);
+    surface.Occlusion = ao(p, surface.Normal, 1.0) * max(smoothstep(-40.0, -20.0, positionWS.y), 0.3);
     surface.BentNormal = surface.Normal * surface.Occlusion; // nonsense
     surface.Albedo = float3(1.0, 1.0, 1.0);
     surface.Smoothness = 0.8;
     surface.Metallic = 0.0;
-    //surface.Emissive = float3(10000.0, 1000., 100.) * 2.0;
     return surface;
 }

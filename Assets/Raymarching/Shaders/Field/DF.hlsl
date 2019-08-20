@@ -23,34 +23,38 @@ float dMenger(float3 z0, float3 offset, float scale) {
 
 float distanceFunction(float3 p) {
     float scale = 100.0;
-    p *= float3(scale, scale*2.0, scale);
-    float l = length(p);
+    float3 scale3 = float3(scale, scale*2.0, scale);
+    p *= scale3;
+    float distanceFromOrigin = length(p);
+
     float r = 2.75;
-    p.xz = mod(p.xz - r*0.5, r) - r*0.5;
-    if (p.y < 0.0) {
-        p.y = mod(p.y - r*0.5, r) - r*0.5;
-    }
-    float d = dMenger(p, float3(1.9 + sin(_Time.y*2.0 + p.x) * 0.02 + sin(l) * 0.2, 1.0+ sin(_Time.y*6.0 + p.z) * 0.01 + cos(l) * 0.2, 1.9 + sin(_Time.y*3.0 + p.z) * 0.02 + sin(l) * 0.2), 3.0) / (scale*2.0);
-    //float d = dMenger(p, float3(2.0, 1.0, 2.0), 3.0) / (scale*2.0);
-    //d = length(p) - 0.1;
+    p.xz = rep(p.xz, r);
+    p.y = lerp(p.y, rep(p.y, r), step(p.y, 0.0));
+
+    float3 offset = float3(1.9 + sin(_Time.y*2.0 + p.x) * 0.02 + sin(distanceFromOrigin) * 0.2,
+                           1.0 + sin(_Time.y*6.0 + p.z) * 0.01 + cos(distanceFromOrigin) * 0.2,
+                           1.9 + sin(_Time.y*3.0 + p.z) * 0.02 + sin(distanceFromOrigin) * 0.2);
+    float d = dMenger(p, offset, 3.0) / (scale3.y);
     return d * 0.8;
 }
 
 DistanceFunctionSurfaceData getDistanceFunctionSurfaceData(float3 p) {
     DistanceFunctionSurfaceData surface = initDistanceFunctionSurfaceData();
+
+    float3 positionWS = GetAbsolutePositionWS(p);
     surface.Position = p;
     surface.Normal   = normal(p, 0.000001);
-    surface.Occlusion = ao(p, surface.Normal, 1.0) * smoothstep(-60.0, -40.0, p.y + _WorldSpaceCameraPos.y);// * clamp((p.y + _WorldSpaceCameraPos.y + 50) * 0.01, 0.0, 1.0);
+    surface.Occlusion = ao(p, surface.Normal, 1.0) * smoothstep(-60.0, -40.0, positionWS.y);
     surface.BentNormal = surface.Normal * surface.Occlusion; // nonsense
-    surface.Albedo = lerp(float3(1.0, 1.0, 1.0), float3(0.7, 0.1, 0.05), clamp((-p.y - _WorldSpaceCameraPos.y - 23) * 0.1, 0.0, 1.0));
-    surface.Smoothness = lerp(0.4, 0.8, clamp((-p.y - _WorldSpaceCameraPos.y - 23) * 0.1, 0.0, 1.0));
+    surface.Albedo = lerp(float3(1.0, 1.0, 1.0), float3(0.7, 0.1, 0.05), smoothstep(-23.0, -35.0, positionWS.y));
+    surface.Smoothness = lerp(0.4, 0.8, smoothstep(-23.0, -35.0, positionWS.y));
     surface.Metallic = 0.0;
-    float l = length(p + _WorldSpaceCameraPos);
-    //surface.Emissive = float3(10000.0, 1000., 100.) * 2.0;
+
+    float distanceFromOrigin = length(positionWS);
 
     // https://github.com/FMS-Cat/type
     float edge = saturate( pow( length( surface.Normal - normal( surface.Position, 0.000008 ) ) * 2.0, 2.0 ) );
-    surface.Emissive = float3(10000.0, 1000., 100.) * 2.0 * edge * clamp(sin(_Time.y + l), 0.0, 1.0) * clamp((-p.y - _WorldSpaceCameraPos.y - 40) * 0.1, 0.0, 1.0) * 1.0;
+    surface.Emissive = float3(20000.0, 2000., 200.) * edge * saturate(sin(_Time.y + distanceFromOrigin)) * smoothstep(-40.0, -60.0, positionWS.y);
 
     return surface;
 }

@@ -1,5 +1,6 @@
 #define PI2 (PI*2.0)
 #define mod(x, y) ((x) - (y) * floor((x) / (y)))
+#define rep(x, y) (mod(x - y*0.5, y) - y*0.5)
 
 struct DistanceFunctionSurfaceData {
     float3 Position;

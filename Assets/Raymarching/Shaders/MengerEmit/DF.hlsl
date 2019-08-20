@@ -37,11 +37,12 @@ DistanceFunctionSurfaceData getDistanceFunctionSurfaceData(float3 p) {
     surface.Albedo = float3(1.0, 1.0, 1.0);
     surface.Smoothness = 0.6;
     surface.Metallic = 0.0;
-    
-    float t = frac(_Time.y);
-    float3 pos = UNITY_MATRIX_M._14_24_34;
-    float len = abs(length((pos - p) / getObjectScale()) - t) - 0.2;
+
+    float3 positionOS = TransformWorldToObject(surface.Position);
+    float distanceFromCenter = length(positionOS);
+
+    float emissive = saturate(sin(-_Time.y * 6.0 + distanceFromCenter * 15.0));
     float edge = saturate( pow( length( surface.Normal - normal( surface.Position, 0.005 ) ) * 2.0, 2.0 ) );
-    surface.Emissive = float3(10000.0, 1000., 100.) * 8.0 * edge * clamp(len, 0.0, 1.0);
+    surface.Emissive = float3(80000.0, 8000., 800.) * edge * saturate(emissive);
     return surface;
 }
