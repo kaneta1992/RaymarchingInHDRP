@@ -1,3 +1,7 @@
+#define GBUFFER_MARCHING_ITERATION       128
+#define SHADOWCASTER_MARCHING_ITERATION  99
+#define MOTIONVECTORS_MARCHING_ITERATION 99
+
 // https://gam0022.net/blog/2019/06/25/unity-raymarching/
 float dMenger(float3 z0, float3 offset, float scale) {
     float4 z = float4(z0, 1.0);
@@ -27,13 +31,15 @@ float distanceFunction(float3 p) {
 
 DistanceFunctionSurfaceData getDistanceFunctionSurfaceData(float3 p) {
     DistanceFunctionSurfaceData surface = initDistanceFunctionSurfaceData();
+    
+    float3 positionWS = GetAbsolutePositionWS(p);
     surface.Position = p;
     surface.Normal   = normal(p, 0.00001);
-    surface.Occlusion = ao(p, surface.Normal, 1.0) * clamp(smoothstep(-40.0, -20.0, p.y + _WorldSpaceCameraPos.y), 0.3, 1.0);
-    surface.BentNormal = surface.Normal * surface.Occlusion; // nonsense
+    surface.Occlusion = ao(p, surface.Normal, 1.0) * max(smoothstep(-40.0, -20.0, positionWS.y), 0.3);
+    // Normally BentNormal is the average direction of unoccluded ambient light, but AO * Normal is used instead because of high calculation load.
+    surface.BentNormal = surface.Normal * surface.Occlusion;
     surface.Albedo = float3(1.0, 1.0, 1.0);
     surface.Smoothness = 0.8;
     surface.Metallic = 0.0;
-    //surface.Emissive = float3(10000.0, 1000., 100.) * 2.0;
     return surface;
 }

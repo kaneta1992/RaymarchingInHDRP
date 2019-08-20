@@ -1,6 +1,6 @@
-#define PI 3.141592
 #define PI2 (PI*2.0)
 #define mod(x, y) ((x) - (y) * floor((x) / (y)))
+#define rep(x, y) (mod(x - y*0.5, y) - y*0.5)
 
 struct DistanceFunctionSurfaceData {
     float3 Position;
@@ -47,11 +47,14 @@ float3 getObjectScale() {
 }
 
 float map(float3 p) {
+    // Ray overshoot at different scales depending on the axis.
+    // Normalize the distance field with the smallest scale to prevent it.
     float3 scale = getObjectScale();
     return distanceFunction(TransformWorldToObject(p)) * min(scale.x, min(scale.y, scale.z));
 }
 
 float3 normal(float3 p, float eps) {
+    // Calculate normal in object space and convert it to world space to reduce differences due to posture.
     p = TransformWorldToObject(p);
     float2 e = float2(1.0, -1.0) * eps;
     return TransformObjectToWorldDir(normalize(
@@ -85,7 +88,9 @@ bool clipSphere(float3 p, float offset) {
 float3 GetRayOrigin(float3 positionRWS) {
     float3 pos = float3(0.0, 0.0, 0.0);
     if (clipSphere(float3(0.0, 0.0, 0.0), _ProjectionParams.y) > 0.0) {
-        //pos = positionRWS;
+        // TODO: If the mesh is a perfect sphere, the camera outside the clipping sphere can start the ray from the fragment position.
+        //       But since it's not a perfect sphere, I don't know how to do it.
+        // pos = positionRWS;
     }
     return pos;
 }
@@ -103,11 +108,13 @@ float3 GetShadowRayOrigin(float3 positionRWS)
     else
     {
         // Orthographic(Directional Light?)
+        // Directional Light cameras are always expected to be outside the meshDirectional light.
         pos = positionRWS;  // fix me?
     }
 
     float near = 0.1;
     if (clipSphere(viewPos, near) > 0.0) {
+        // TODO: For the same reason as GetRayOrigin, cannot start a ray from a fragment position.
         //pos = positionRWS;
     }
 
