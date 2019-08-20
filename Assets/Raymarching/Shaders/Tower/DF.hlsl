@@ -36,7 +36,8 @@ DistanceFunctionSurfaceData getDistanceFunctionSurfaceData(float3 p) {
     surface.Position = p;
     surface.Normal   = normal(p, 0.00001);
     surface.Occlusion = ao(p, surface.Normal, 1.0) * max(smoothstep(-40.0, -20.0, positionWS.y), 0.3);
-    surface.BentNormal = surface.Normal * surface.Occlusion; // nonsense
+    // Normally BentNormal is the average direction of unoccluded ambient light, but AO * Normal is used instead because of high calculation load.
+    surface.BentNormal = surface.Normal * surface.Occlusion;
     surface.Albedo = float3(1.0, 1.0, 1.0);
     surface.Smoothness = 0.8;
     surface.Metallic = 0.0;

@@ -8,6 +8,7 @@ PackedVaryingsType Vert(AttributesMesh inputMesh)
 {
     VaryingsType varyingsType;
     varyingsType.vmesh = VertMesh(inputMesh);
+    // Because spotlight and pointlight may be culled, vertex is forcibly moved to the foreground.
     varyingsType.vmesh.positionCS.z = 0.0;
     return PackVaryingsType(varyingsType);
 }

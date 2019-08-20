@@ -31,6 +31,7 @@ float distanceFunction(float3 p) {
     p.xz = rep(p.xz, r);
     p.y = lerp(p.y, rep(p.y, r), step(p.y, 0.0));
 
+    // Spooky animation of the field
     float3 offset = float3(1.9 + sin(_Time.y*2.0 + p.x) * 0.02 + sin(distanceFromOrigin) * 0.2,
                            1.0 + sin(_Time.y*6.0 + p.z) * 0.01 + cos(distanceFromOrigin) * 0.2,
                            1.9 + sin(_Time.y*3.0 + p.z) * 0.02 + sin(distanceFromOrigin) * 0.2);
@@ -44,8 +45,11 @@ DistanceFunctionSurfaceData getDistanceFunctionSurfaceData(float3 p) {
     float3 positionWS = GetAbsolutePositionWS(p);
     surface.Position = p;
     surface.Normal   = normal(p, 0.000001);
+
+    // Ambient light is attenuated deeper underground.
     surface.Occlusion = ao(p, surface.Normal, 1.0) * smoothstep(-60.0, -40.0, positionWS.y);
-    surface.BentNormal = surface.Normal * surface.Occlusion; // nonsense
+    // Normally BentNormal is the average direction of unoccluded ambient light, but AO * Normal is used instead because of high calculation load.
+    surface.BentNormal = surface.Normal * surface.Occlusion;
     surface.Albedo = lerp(float3(1.0, 1.0, 1.0), float3(0.7, 0.1, 0.05), smoothstep(-23.0, -35.0, positionWS.y));
     surface.Smoothness = lerp(0.4, 0.8, smoothstep(-23.0, -35.0, positionWS.y));
     surface.Metallic = 0.0;
