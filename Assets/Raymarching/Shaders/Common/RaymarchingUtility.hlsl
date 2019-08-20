@@ -1,4 +1,3 @@
-#define PI 3.141592
 #define PI2 (PI*2.0)
 #define mod(x, y) ((x) - (y) * floor((x) / (y)))
 
