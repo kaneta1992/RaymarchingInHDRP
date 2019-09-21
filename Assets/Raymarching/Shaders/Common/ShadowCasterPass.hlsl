@@ -61,7 +61,7 @@ void Frag(  PackedVaryingsToPS packedInput
     float3 pos = GetShadowRayOrigin(input.positionRWS);
     float3 ray = -V;
 
-    float t = TraceDepth(pos, ray, SHADOWCASTER_MARCHING_ITERATION);
+    float t = TraceDepth(pos, ray, SHADOWCASTER_MARCHING_ITERATION, MARCHING_ADAPTIVE_EPS_BASE);
 
     float depth = WorldPosToDeviceDepth(pos + ray * t);
 
