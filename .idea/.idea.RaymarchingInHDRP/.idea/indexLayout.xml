@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelUserStore">
+    <attachedFolders />
+    <explicitIncludes>
+      <Path>Library/PackageCache/com.unity.collab-proxy@1.2.16</Path>
+      <Path>Library/PackageCache/com.unity.ext.nunit@1.0.0</Path>
+      <Path>Library/PackageCache/com.unity.ide.rider@1.0.8</Path>
+      <Path>Library/PackageCache/com.unity.ide.vscode@1.0.7</Path>
+      <Path>Library/PackageCache/com.unity.render-pipelines.core@6.9.0</Path>
+      <Path>Library/PackageCache/com.unity.shadergraph@6.9.0</Path>
+      <Path>Library/PackageCache/com.unity.test-framework@1.0.13</Path>
+      <Path>Library/PackageCache/com.unity.textmeshpro@2.0.1</Path>
+      <Path>Library/PackageCache/com.unity.visualeffectgraph@6.9.0-preview</Path>
+      <Path>Packages</Path>
+      <Path>ProjectSettings</Path>
+      <Path>ScriptableRenderPipeline/com.unity.render-pipelines.high-definition</Path>
+    </explicitIncludes>
+    <explicitExcludes>
+      <Path>.git</Path>
+      <Path>.idea</Path>
+      <Path>.vscode</Path>
+      <Path>Images</Path>
+      <Path>Library</Path>
+      <Path>Temp</Path>
+      <Path>obj</Path>
+    </explicitExcludes>
+  </component>
+</project>
