@@ -2,7 +2,7 @@
 {
     Properties
     {
-        _MandelScale("Mandel Scale", Range(0, 4)) = 3
+        _MandelScale("Mandel Scale", Range(2, 4)) = 3
     
         // Versioning of material to help for upgrading
         [HideInInspector] _HdrpVersion("_HdrpVersion", Float) = 2
