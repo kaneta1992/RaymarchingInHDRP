@@ -152,7 +152,17 @@ void ToHDRPSurfaceAndBuiltinData(FragInputs input, float3 V, inout PositionInput
     surfaceData.metallic = surface.Metallic;
     input.positionRWS = surface.Position;
     posInput.positionWS = surface.Position;
-    GetBuiltinData(input, V, posInput, surfaceData, 0.0, surface.BentNormal, 0.0, builtinData);
+
+    float alpha = 1.0;
+#if HAVE_DECALS
+    if (_EnableDecals)
+    {
+        DecalSurfaceData decalSurfaceData = GetDecalSurfaceData(posInput, alpha);
+        ApplyDecalToSurfaceData(decalSurfaceData, surfaceData);
+    }
+#endif
+
+    GetBuiltinData(input, V, posInput, surfaceData, alpha, surface.BentNormal, 0.0, builtinData);
     builtinData.emissiveColor = surface.Emissive;
 }
 
