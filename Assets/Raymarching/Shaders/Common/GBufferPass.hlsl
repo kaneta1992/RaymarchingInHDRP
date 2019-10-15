@@ -49,7 +49,7 @@ void Frag(  PackedVaryingsToPS packedInput,
     float3 ray = normalize(input.positionRWS);
     float3 pos = GetRayOrigin(input.positionRWS);
 
-    DistanceFunctionSurfaceData surface = Trace(pos, ray, GBUFFER_MARCHING_ITERATION);
+    DistanceFunctionSurfaceData surface = Trace(pos, ray, GBUFFER_MARCHING_ITERATION, MARCHING_ADAPTIVE_EPS_BASE);
 
     SurfaceData surfaceData;
     BuiltinData builtinData;

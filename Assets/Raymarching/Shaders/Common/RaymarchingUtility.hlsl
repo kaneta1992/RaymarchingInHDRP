@@ -121,14 +121,14 @@ float3 GetShadowRayOrigin(float3 positionRWS)
     return pos;
 }
 
-float TraceDepth(float3 ro, float3 ray, int ite) {
+float TraceDepth(float3 ro, float3 ray, int ite, float epsBase) {
     float t = 0.0001;
     float3 p;
     for(int i = 0; i< ite; i++) {
         p = ro + ray * t;
         float d = map(p);
-        if (d < 0.00001) break;
         t += d;
+        if (d < t * epsBase) break;
     }
     if (clipSphere(p, 0.0)) {
         discard;
@@ -136,8 +136,8 @@ float TraceDepth(float3 ro, float3 ray, int ite) {
     return t;
 }
 
-DistanceFunctionSurfaceData Trace(float3 ro, float3 ray, int ite) {
-    float t = TraceDepth(ro, ray, ite);
+DistanceFunctionSurfaceData Trace(float3 ro, float3 ray, int ite, float epsBase) {
+    float t = TraceDepth(ro, ray, ite, epsBase);
     return getDistanceFunctionSurfaceData(ray * t + ro);
 }
 
