@@ -58,7 +58,7 @@ void Frag(  PackedVaryingsToPS packedInput
     float3 V = float3(1.0, 1.0, 1.0); // Avoid the division by 0
 #endif
 
-    float3 pos = GetShadowRayOrigin(input.positionRWS);
+    float3 pos = GetShadowRayOrigin(input.positionRWS, input.isFrontFace);
     float3 ray = -V;
 
     float t = TraceDepth(pos, ray, SHADOWCASTER_MARCHING_ITERATION, MARCHING_ADAPTIVE_EPS_BASE);
