@@ -85,17 +85,13 @@ bool clipSphere(float3 p, float offset) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-float3 GetRayOrigin(float3 positionRWS) {
-    float3 pos = float3(0.0, 0.0, 0.0);
-    if (clipSphere(float3(0.0, 0.0, 0.0), _ProjectionParams.y) > 0.0) {
-        // TODO: If the mesh is a perfect sphere, the camera outside the clipping sphere can start the ray from the fragment position.
-        //       But since it's not a perfect sphere, I don't know how to do it.
-        // pos = positionRWS;
-    }
-    return pos;
+float3 GetRayOrigin(float3 positionRWS, bool isFrontFace)
+{
+    // If we're outside the mesh, start the ray on the mesh surface, otherwise use the camera position (origin)
+    return isFrontFace ? positionRWS : float3(0.0, 0.0, 0.0);
 }
 
-float3 GetShadowRayOrigin(float3 positionRWS)
+float3 GetShadowRayOrigin(float3 positionRWS, bool isFrontFace)
 {
     float3 viewPos = GetCurrentViewPosition();
     float3 pos = float3(0.0, 0.0, 0.0);
@@ -112,13 +108,7 @@ float3 GetShadowRayOrigin(float3 positionRWS)
         pos = positionRWS;  // fix me?
     }
 
-    float near = 0.1;
-    if (clipSphere(viewPos, near) > 0.0) {
-        // TODO: For the same reason as GetRayOrigin, cannot start a ray from a fragment position.
-        //pos = positionRWS;
-    }
-
-    return pos;
+    return isFrontFace ? positionRWS : pos;
 }
 
 float TraceDepth(float3 ro, float3 ray, int ite, float epsBase) {

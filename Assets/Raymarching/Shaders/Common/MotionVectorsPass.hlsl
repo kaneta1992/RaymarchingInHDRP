@@ -68,7 +68,7 @@ void Frag(  PackedVaryingsToPS packedInput
 #endif
 
     float3 ray = normalize(input.positionRWS);
-    float3 pos = GetRayOrigin(input.positionRWS);
+    float3 pos = GetRayOrigin(input.positionRWS, input.isFrontFace);
 
     float t = TraceDepth(pos, ray, MOTIONVECTORS_MARCHING_ITERATION, MARCHING_ADAPTIVE_EPS_BASE);
 
